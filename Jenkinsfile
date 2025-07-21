@@ -4,35 +4,35 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/heet2604/SimonGame'
+                git url: 'https://github.com/heet2604/SimonGame', branch: 'main'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'No dependencies to install for static HTML/JS project'
+                echo 'No dependencies to install for a static HTML/JS project.'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'No automated tests configured yet'
+                echo 'No automated tests are configured.'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'This is where you can deploy to a server or upload to S3 etc.'
+                echo 'Deploying the app... (add your deployment logic here)'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline ran successfully!'
+            echo '✅ Pipeline executed successfully!'
         }
         failure {
-            echo 'Something went wrong.'
+            echo '❌ Pipeline failed.'
         }
     }
 }
