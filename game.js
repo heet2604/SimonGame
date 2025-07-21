@@ -1,3 +1,10 @@
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 8081;
+
+// Ensure body parser middleware is used (add this only once)
+app.use(express.json()); // Needed to parse JSON payloads
+
 var buttonColours = ["red","blue","green","yellow"];
 
 var gamePattern=[];
@@ -86,3 +93,12 @@ function startOver(){
     gamePattern = [];
     started = false;
 }
+
+app.post("/webhook",(req,res)=>{
+    console.log("Webhook workingh")
+    res.status(200).send("Received");
+})
+
+app.listen(8081,()=>{
+    console.log("live on 8081")
+})
