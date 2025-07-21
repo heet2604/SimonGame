@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 3001;
 
 // Ensure body parser middleware is used (add this only once)
 app.use(express.json()); // Needed to parse JSON payloads
@@ -99,6 +99,6 @@ app.post("/webhook",(req,res)=>{
     res.status(200).send("Received");
 })
 
-app.listen(8081,()=>{
+app.listen(3031,()=>{
     console.log("live on 8081")
 })

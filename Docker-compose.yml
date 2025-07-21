@@ -4,5 +4,5 @@ services:
   simon-game:
     build: .
     ports:
-      - "8081:80"
+      - "3001:80"
     container_name: simon-game-container
