@@ -1,104 +1,88 @@
-const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3001;
+var buttonColours = ["red","blue","green","yellow"];
 
-// Ensure body parser middleware is used (add this only once)
-app.use(express.json()); // Needed to parse JSON payloads
+var gamePattern=[];
 
-// var buttonColours = ["red","blue","green","yellow"];
+var userClickedPattern=[];
 
-// var gamePattern=[];
+var started = false;
 
-// var userClickedPattern=[];
+var level = 0;
 
-// var started = false;
+$(document).keypress(function(){
+    if(!started){
+        $("#level-title").text("Level " + level);
+        nextSequence();
+        started=true;
+    }
+});
 
-// var level = 0;
+$(".btn").click(function(){
 
-// $(document).keypress(function(){
-//     if(!started){
-//         $("#level-title").text("Level " + level);
-//         nextSequence();
-//         started=true;
-//     }
-// });
+    var userChosenColour = $(this).attr("id");
 
-// $(".btn").click(function(){
+    userClickedPattern.push(userChosenColour);
 
-//     var userChosenColour = $(this).attr("id");
+    playSound(userChosenColour);
+    animatePress(userChosenColour);
 
-//     userClickedPattern.push(userChosenColour);
+    checkAnswer(userClickedPattern.length-1);
+});
 
-//     playSound(userChosenColour);
-//     animatePress(userChosenColour);
+function nextSequence(){
 
-//     checkAnswer(userClickedPattern.length-1);
-// });
+    userClickedPattern=[];
 
-// function nextSequence(){
+    level++;
 
-//     userClickedPattern=[];
+    $("#level-title").text("Level " + level);
 
-//     level++;
+    var randomNumber = Math.floor(Math.random() * 4);
 
-//     $("#level-title").text("Level " + level);
+    var randomChosenColour = buttonColours[randomNumber];
 
-//     var randomNumber = Math.floor(Math.random() * 4);
+    gamePattern.push(randomChosenColour);
 
-//     var randomChosenColour = buttonColours[randomNumber];
+    $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
 
-//     gamePattern.push(randomChosenColour);
+    playSound(randomChosenColour); 
+}
 
-//     $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+function playSound(name){
+    var audio = new Audio("./sounds/" + name + ".mp3");
+    audio.play();
+}
 
-//     playSound(randomChosenColour); 
-// }
+function animatePress(currentColor){
+    $("#" + currentColor).addClass("pressed");
 
-// function playSound(name){
-//     var audio = new Audio("./sounds/" + name + ".mp3");
-//     audio.play();
-// }
+    setTimeout(function(){
+        $("#" + currentColor).removeClass("pressed");
+    }, 100);
+}
 
-// function animatePress(currentColor){
-//     $("#" + currentColor).addClass("pressed");
+function checkAnswer(currentLevel){
+    if(gamePattern[currentLevel] === userClickedPattern[currentLevel]){
+        if(userClickedPattern.length === gamePattern.length){
+            setTimeout(function(){
+                nextSequence();
+            }, 1000);
+        }
+    }
+    else{
+        playSound("wrong");
+        $("body").addClass("game-over");
+        $("#level-title").text("Game over, Press Any Key to Restart");
+        setTimeout(function(){
+            $("body").removeClass("game-over");
+        },200);
 
-//     setTimeout(function(){
-//         $("#" + currentColor).removeClass("pressed");
-//     }, 100);
-// }
-
-// function checkAnswer(currentLevel){
-//     if(gamePattern[currentLevel] === userClickedPattern[currentLevel]){
-//         if(userClickedPattern.length === gamePattern.length){
-//             setTimeout(function(){
-//                 nextSequence();
-//             }, 1000);
-//         }
-//     }
-//     else{
-//         playSound("wrong");
-//         $("body").addClass("game-over");
-//         $("#level-title").text("Game over, Press Any Key to Restart");
-//         setTimeout(function(){
-//             $("body").removeClass("game-over");
-//         },200);
-
-//         startOver();
+        startOver();
         
-//     }
-// }
+    }
+}
 
-// function startOver(){
-//     level = 0;
-//     gamePattern = [];
-//     started = false;
-// }
-
-app.post("/webhook",(req,res)=>{
-    console.log("Webhook workingh")
-    res.status(200).send("Received");
-})
-
-app.listen(3031,()=>{
-    console.log("live on 8081")
-})
+function startOver(){
+    level = 0;
+    gamePattern = [];
+    started = false;
+}
